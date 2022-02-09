@@ -5,6 +5,7 @@ import open from '../../../../assets/open';
 import { Spacer } from '../../../components/spacer/Spacer.coomponent';
 import { Text } from '../../../components/typography/text.coomponent'
 import { RestaurantCard, RestaurantCardCover, Info, Section, SectionEnd, Ratting, Icon, Address, } from "./RestaurantInfoCardStyles";
+import {Favourite} from '../../../components/favourites/Favourite.component';
 
 
 const RestaurantInfoCard = ({ restaurant = {} }) => {
@@ -15,21 +16,23 @@ const RestaurantInfoCard = ({ restaurant = {} }) => {
         address = '100 northom street',
         isOpenNow = true,
         ratting = 4,
-        isClosedTemporarily = true
+        isClosedTemporarily = true,
+        placeId
     } = restaurant
 
     const ratingArray = Array.from(new Array(Math.ceil(ratting)));
 
     return (
         <RestaurantCard elevation={5}>
+            <Favourite restaurant={restaurant} />
             <RestaurantCardCover key={name} source={{uri : photos[0]}} />
             <Info>
                 <Text variant='label'>{name}</Text>
                 <Section>
                     <Ratting>
                         {
-                            ratingArray.map(()=>(
-                                <SvgXml xml={star} width={20} height={20} />
+                            ratingArray.map((_, i)=>(
+                                <SvgXml key={`star-${placeId}-${i}`} xml={star} width={20} height={20} />
                             ))
                         }
                     </Ratting>

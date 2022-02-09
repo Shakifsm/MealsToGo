@@ -1,45 +1,26 @@
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 import React from 'react';
-import { Text } from 'react-native';
 import { ThemeProvider } from 'styled-components/native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import {Ionicons} from '@expo/vector-icons';
 import { useFonts as useOswald, Oswald_400Regular, } from '@expo-google-fonts/oswald';
 import { useFonts as useLato, Lato_400Regular, } from '@expo-google-fonts/lato';
 import { theme } from './src/infrastructure/theme';
-import RestaurantsScreen from './src/features/restaurants/screens/RestaurantsScreen';
-import { SafeArea } from './src/components/utility/safe-area.component';
+import Navigation from './src/infrastructure/navigation';
+import { AuthenticationContextProvider } from './src/services/authentication/authentication.context';
+import firebase from "firebase/app";
+import "firebase/auth";
 
-const Tab = createBottomTabNavigator();
-
-const TAB_ICON = {
-  Restaurants: "md-restaurant",
-  Map: "md-map",
-  Settings: "md-settings",
+const firebaseConfig  = {
+  apiKey: "AIzaSyCMKrEI2PEkYYJFBlmGm9MHKI9gLE2kzyQ",
+  authDomain: "mealstogo-48127.firebaseapp.com",
+  projectId: "mealstogo-48127",
+  storageBucket: "mealstogo-48127.appspot.com",
+  messagingSenderId: "751829389986",
+  appId: "1:751829389986:web:2054a15367c12918a6fdfb"
 };
 
-const Settings = () => (
-  <SafeArea>
-    <Text>Settings Screen</Text>
-  </SafeArea>
-);
-const Map = () => (
-  <SafeArea>
-    <Text>Map Screen</Text>
-  </SafeArea>
-);
-
-
-
-const createScreenOptions = ({ route }) => {
-  const iconName = TAB_ICON[route.name];
-  return {
-    tabBarIcon: ({ size, color }) => (
-      <Ionicons name={iconName} size={size} color={color} />
-    ),
-  };
-};
+if (firebase.apps.length === 0) {
+  firebase.initializeApp(firebaseConfig);
+}
 
 export default function App() {
 
@@ -55,24 +36,12 @@ export default function App() {
     return null
   }
 
- 
-
   return (
     <>
       <ThemeProvider theme={theme}>
-        <NavigationContainer>
-          <Tab.Navigator 
-          screenOptions={createScreenOptions}
-          tabBarOptions={{
-            activeTintColor: "tomato",
-            inactiveTintColor: "gray",
-          }}
-          >
-            <Tab.Screen name="Restaurants" component={RestaurantsScreen} />
-            <Tab.Screen name="Map" component={Map} />
-            <Tab.Screen name="Settings" component={Settings} />
-          </Tab.Navigator>
-        </NavigationContainer>
+        <AuthenticationContextProvider>
+              <Navigation />
+          </AuthenticationContextProvider>
       </ThemeProvider>
       <ExpoStatusBar style="auto" />
     </>
